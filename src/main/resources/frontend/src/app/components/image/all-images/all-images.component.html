@@ -1,0 +1,93 @@
+<div class="head-container">
+
+    <!-- ################### button add image ####################  -->
+    <div class="add-image">
+        <button color="primary" mat-flat-button (click)="openDialog()">add image</button>
+    </div>
+
+    <!-- ################### search field ####################  -->
+    <div class="search">
+        <mat-form-field>
+            <input matInput name="search" [(ngModel)]="searchWord">
+            <button matSuffix mat-button (click)="search()">
+                <mat-icon>search</mat-icon>
+            </button>
+        </mat-form-field>
+    </div>
+
+    <!-- ################### lightbulb to switch between original and thumb images ####################  -->
+    <div class="thumb">
+        <div mat-form-field>
+            <button matSuffix mat-button (click)="switchThumb()">
+                <mat-icon>lightbulb</mat-icon>
+            </button>
+        </div>
+    </div>
+
+    <!-- ################### icon to sort by name ####################  -->
+    <div class="sort">
+        <div mat-form-field>
+            <button matSuffix mat-button (click)="sort()">
+                <mat-icon>sort_by_alpha</mat-icon>
+            </button>
+        </div>
+    </div>
+
+    <!-- ################### pagination component ####################  -->
+    <div class="paginate">
+        <mat-paginator [length]="imagePage?.totalElements" [pageSizeOptions]="[12,24,48,100]"
+            (page)="pageEvent = $event; onPaginateChange($event)" showFirstLastButtons>
+        </mat-paginator>
+    </div>
+</div>
+
+<!-- ################### image container ####################  -->
+<div class="container">
+    <div *ngFor="let image of imagePage?.images">
+        <mat-card class="mat-elevation-z4">
+            <img src="{{baseUrl}}{{image.imageUrl}}" class="image">
+
+            <div class="card-footer">
+                <!-- ################### ngIf to show image name in label or input based on if we click on edit buttin ####################  -->
+                <div class="name">
+                    <div *ngIf="image.id==toBeEdited; then input else label"></div>
+                    <ng-template #input>
+                        <mat-form-field>
+                            <input matInput [(ngModel)]="newImageName">
+                        </mat-form-field>
+                    </ng-template>
+                    <ng-template #label>
+                        <span>{{image.name}}</span>
+                    </ng-template>
+                </div>
+                <!-- ################### ngIf on single card to show buttons ####################  -->
+
+                <div *ngIf="image.id!=toBeEdited" class="edit">
+                    <button matSuffix mat-button (click)="edit(image.id)">
+                        <mat-icon>edit</mat-icon>
+                    </button>
+                </div>
+
+                <div *ngIf="image.id!=toBeEdited" class="delete">
+                    <button matSuffix mat-button (click)="delete(image.id)">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </div>
+
+                <div *ngIf="image.id==toBeEdited" class="validate">
+                    <button matSuffix mat-button (click)="validate(image.id)">
+                        <mat-icon>done</mat-icon>
+                    </button>
+                </div>
+
+                <div *ngIf="image.id==toBeEdited" class="cancel">
+                    <button matSuffix mat-button (click)="cancel()">
+                        <mat-icon>cancel</mat-icon>
+                    </button>
+                </div>
+
+            </div>
+
+        </mat-card>
+    </div>
+</div>
