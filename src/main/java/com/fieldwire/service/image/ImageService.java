@@ -1,20 +1,20 @@
 package com.fieldwire.service.image;
 
-import com.fieldwire.presentation.dto.ImageDto;
-import com.fieldwire.presentation.dto.ImagePageDto;
+import com.fieldwire.service.image.domain.Image;
+import com.fieldwire.service.image.domain.ImagePage;
 
 import java.io.IOException;
 
 public interface ImageService {
 
-    ImagePageDto getPaginatedImages(Integer page, Integer numberOfElements, String search, String sort, String type);
+    ImagePage getPaginated(Integer page, Integer numberOfElements, String search, String sort, String type);
 
-    void deleteImage(Long id);
+    void delete(Long id);
 
-    void saveImage(ImageDto imageDto) throws IOException;
+    void save(Image image) throws IOException;
 
-    void updateImage(ImageDto imageDto);
+    void update(Image image);
 
-    byte[] getImage(String path);
+    byte[] get(String path);
 
 }

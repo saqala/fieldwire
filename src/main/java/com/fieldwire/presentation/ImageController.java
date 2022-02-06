@@ -11,10 +11,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static com.fieldwire.service.storage.ImageStorageServiceImpl.IMAGES_URL;
+import static com.fieldwire.service.image.domain.Image.IMAGES_URL;
 
 @RestController
 public class ImageController {
@@ -31,13 +32,13 @@ public class ImageController {
     public ResponseEntity<ImagePageDto> getImages(@RequestParam("page") Integer page, @RequestParam("elements") Integer elements, @RequestParam(value = "search", required = false) String search,
                                                   @RequestParam(value = "sort", required = false) String sort, @RequestParam(value = "type", required = false) String type)
     {
-        return ResponseEntity.status(HttpStatus.OK).body(imageService.getPaginatedImages(page, elements, search, sort, type));
+        return ResponseEntity.status(HttpStatus.OK).body(ImagePageDto.mapToImagePageDto(imageService.getPaginated(page, elements, search, sort, type)));
     }
 
     @PostMapping(value = "/images", consumes = {"multipart/form-data"})
     public ResponseEntity saveImages(@ModelAttribute ImageDto imageDto) {
         try {
-            imageService.saveImage(imageDto);
+            imageService.save(ImageDto.to(imageDto));
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (Exception exception) {
             logger.log(Level.WARNING, exception.getMessage(), exception);
@@ -46,14 +47,14 @@ public class ImageController {
     }
 
     @PatchMapping(value = "/images")
-    public ResponseEntity updateImage(@RequestBody ImageDto imageDto) {
-        imageService.updateImage(imageDto);
+    public ResponseEntity updateImage(@RequestBody ImageDto imageDto) throws IOException {
+        imageService.update(ImageDto.to(imageDto));
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @DeleteMapping(value = "/images/{id}")
     public ResponseEntity deleteImage(@PathVariable Long id) {
-        imageService.deleteImage(id);
+        imageService.delete(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
@@ -61,7 +62,7 @@ public class ImageController {
     public ResponseEntity<byte[]> getImage(HttpServletRequest request) {
 
         String path = request.getRequestURI().split(request.getContextPath() + IMAGES_URL)[1];
-        byte[] imageBytes = imageService.getImage(path);
+        byte[] imageBytes = imageService.get(path);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.IMAGE_JPEG);
         return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
