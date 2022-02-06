@@ -1,15 +1,14 @@
-package com.fieldwire.service;
+package com.fieldwire.service.image;
 
 import com.fieldwire.persistence.entity.ImageEntity;
 import com.fieldwire.persistence.repository.ImageRepository;
 import com.fieldwire.presentation.dto.ImageDto;
 import com.fieldwire.presentation.dto.ImagePageDto;
-import com.fieldwire.service.domain.Image;
-import com.fieldwire.service.domain.ImagePage;
-import com.fieldwire.service.mapper.ImageMapper;
-import com.fieldwire.utile.ImageStorage;
+import com.fieldwire.service.image.domain.Image;
+import com.fieldwire.service.image.domain.ImagePage;
+import com.fieldwire.service.image.mapper.ImageMapper;
+import com.fieldwire.service.storage.ImageStorageService;
 import liquibase.util.StringUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDate;
 
-import static com.fieldwire.service.domain.Image.THUMB;
+import static com.fieldwire.service.image.domain.Image.THUMB;
 
 @Service
 public class ImageServiceImpl implements ImageService {
@@ -29,9 +28,9 @@ public class ImageServiceImpl implements ImageService {
 
     ImageRepository imageRepository;
 
-    ImageStorage imageStorage;
+    ImageStorageService imageStorage;
 
-    public ImageServiceImpl(ImageRepository imageRepository, ImageStorage imageStorage) {
+    public ImageServiceImpl(ImageRepository imageRepository, ImageStorageService imageStorage) {
         this.imageRepository = imageRepository;
         this.imageStorage = imageStorage;
     }
@@ -47,8 +46,8 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public void deleteImage(Long id) {
         imageRepository.findById(id).ifPresent(entity -> {
-            ImageStorage.delete(entity.getUrlToImage());
-            ImageStorage.delete(entity.getUrlToImage()+THUMB);
+            imageStorage.delete(entity.getUrlToImage());
+            imageStorage.delete(entity.getUrlToImage()+THUMB);
             imageRepository.deleteById(id);
         });
     }
@@ -82,6 +81,6 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public byte[] getImage(String path) {
-        return ImageStorage.retrieve(path);
+        return imageStorage.retrieve(path);
     }
 }

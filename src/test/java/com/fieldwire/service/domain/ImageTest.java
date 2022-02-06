@@ -1,10 +1,11 @@
 package com.fieldwire.service.domain;
 
+import com.fieldwire.service.image.domain.Image;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import static com.fieldwire.service.domain.Image.THUMB;
-import static com.fieldwire.utile.ImageStorage.IMAGES_URL;
+import static com.fieldwire.service.image.domain.Image.THUMB;
+import static com.fieldwire.service.storage.ImageStorageServiceImpl.IMAGES_URL;
 
 
 class ImageTest {

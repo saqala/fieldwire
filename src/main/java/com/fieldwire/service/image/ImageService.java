@@ -1,4 +1,4 @@
-package com.fieldwire.service;
+package com.fieldwire.service.image;
 
 import com.fieldwire.presentation.dto.ImageDto;
 import com.fieldwire.presentation.dto.ImagePageDto;

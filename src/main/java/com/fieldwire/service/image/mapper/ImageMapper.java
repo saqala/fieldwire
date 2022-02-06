@@ -1,10 +1,10 @@
-package com.fieldwire.service.mapper;
+package com.fieldwire.service.image.mapper;
 
 import com.fieldwire.persistence.entity.ImageEntity;
 import com.fieldwire.presentation.dto.ImageDto;
 import com.fieldwire.presentation.dto.ImagePageDto;
-import com.fieldwire.service.domain.Image;
-import com.fieldwire.service.domain.ImagePage;
+import com.fieldwire.service.image.domain.Image;
+import com.fieldwire.service.image.domain.ImagePage;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.data.domain.Page;
 

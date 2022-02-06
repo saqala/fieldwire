@@ -1,6 +1,7 @@
-package com.fieldwire.utile;
+package com.fieldwire.service.storage;
 
 
+import com.fieldwire.service.image.exception.ImageException;
 import org.imgscalr.Scalr;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -10,25 +11,22 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
 
-import static com.fieldwire.service.domain.Image.THUMB;
+import static com.fieldwire.service.image.domain.Image.THUMB;
+import static com.fieldwire.service.image.exception.ImageException.DELETE_FILE_EXCEPTION;
+import static com.fieldwire.service.image.exception.ImageException.RETRIEVE_FILE_EXCEPTION;
 
 @Service
-public class ImageStorage {
+public class ImageStorageServiceImpl implements ImageStorageService {
 
-    public static final String JPG = "jpg";
     @Value("${image.outputfile}")
     private String imageDirPath;
 
-    private static final int THUMB_SIZE = 100;
-    public static final String IMAGES_URL = "/files";
-    public static final String PATH_SEPARATOR = "/";
-
+    @Override
     public String store(String directory, byte[] originalImage) throws IOException {
         String directoryName = imageDirPath.concat(directory);
         Files.createDirectories(Paths.get(directoryName));
@@ -45,35 +43,33 @@ public class ImageStorage {
         return toByteArray(thumbImage, JPG);
     }
 
-    public static byte[] toByteArray(BufferedImage bi, String type) throws IOException {
+    private byte[] toByteArray(BufferedImage bi, String type) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ImageIO.write(bi, type, baos);
         return baos.toByteArray();
     }
 
-    public static BufferedImage toBufferedImage(byte[] bytes) throws IOException {
+    private BufferedImage toBufferedImage(byte[] bytes) throws IOException {
         return ImageIO.read(new ByteArrayInputStream(bytes));
 
     }
 
-    public static byte[] retrieve(String path) {
+    @Override
+    public byte[] retrieve(String path) {
         try {
             return Files.readAllBytes(Paths.get(path));
         } catch (IOException exception) {
-            throw new UncheckedIOException(exception);
+            throw new ImageException(RETRIEVE_FILE_EXCEPTION, exception);
         }
     }
 
-    public static void delete(String path) {
+    @Override
+    public void delete(String path) {
         try {
             Files.delete(Paths.get(path));
         } catch (IOException exception) {
-            throw new UncheckedIOException(exception);
+            throw new ImageException(DELETE_FILE_EXCEPTION, exception);
         }
-    }
-
-    public static String getPublicImagesUrl(String imagePath, String type) {
-        return IMAGES_URL + imagePath.strip() + type;
     }
 
 }

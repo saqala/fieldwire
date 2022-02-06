@@ -3,7 +3,7 @@ package com.fieldwire.presentation;
 
 import com.fieldwire.presentation.dto.ImageDto;
 import com.fieldwire.presentation.dto.ImagePageDto;
-import com.fieldwire.service.ImageService;
+import com.fieldwire.service.image.ImageService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static com.fieldwire.utile.ImageStorage.IMAGES_URL;
+import static com.fieldwire.service.storage.ImageStorageServiceImpl.IMAGES_URL;
 
 @RestController
 public class ImageController {

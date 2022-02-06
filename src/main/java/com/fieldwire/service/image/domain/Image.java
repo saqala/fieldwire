@@ -1,6 +1,6 @@
-package com.fieldwire.service.domain;
+package com.fieldwire.service.image.domain;
 
-import com.fieldwire.utile.ImageStorage;
+import com.fieldwire.service.storage.ImageStorageService;
 import liquibase.util.StringUtil;
 
 public class Image {
@@ -32,7 +32,7 @@ public class Image {
 
     public String getImageUrl() {
         type = StringUtil.isEmpty(type) ? "" : THUMB;
-        return ImageStorage.getPublicImagesUrl(imagePath, type);
+        return ImageStorageService.getPublicImagesUrl(imagePath, type);
     }
 
 

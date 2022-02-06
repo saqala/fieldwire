@@ -47,7 +47,7 @@ export class UploadImagesComponent {
         this.progressInfos[idx] = { value: 0, fileName: file.name };
 
         if (file) {
-            let name = this.selectedFileNames instanceof Array  ? this.selectedFileNames[idx] : this.selectedFileNames.split(',')[idx] ?? "";
+            let name = this.selectedFileNames instanceof Array  ? this.selectedFileNames[idx] : this.selectedFileNames.split(',')[idx] ?? file.name;
             this.imageService.upload(file, name).subscribe(
                 (event: any) => {
                     if (event.type === HttpEventType.UploadProgress) {

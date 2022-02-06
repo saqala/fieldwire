@@ -1,4 +1,4 @@
-package com.fieldwire.service.domain;
+package com.fieldwire.service.image.domain;
 
 import java.util.List;
 
