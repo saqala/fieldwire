@@ -16,7 +16,7 @@ import { ImagePopup } from '../popup/image-popup.component';
 export class AllImagesComponent {
 
   @Input() imagePage: ImagePage;
-  @Output() paginate: EventEmitter<CustomPageEvent> = new EventEmitter<CustomPageEvent>();
+  @Output() refreshEvent: EventEmitter<CustomPageEvent> = new EventEmitter<CustomPageEvent>();
 
   pageEvent: CustomPageEvent;
 
@@ -37,17 +37,17 @@ export class AllImagesComponent {
     event.search = this.searchWord;
     event.sort = this.sortValues[this.sortIndex];
     this.lastEvent = event;
-    this.paginate.emit(event);
+    this.refreshEvent.emit(event);
   }
 
   search() {
     this.lastEvent.search = this.searchWord;
-    this.paginate.emit(this.lastEvent);
+    this.refreshEvent.emit(this.lastEvent);
   }
 
   sort() {
     this.lastEvent.sort = this.nextSortValue();
-    this.paginate.emit(this.lastEvent);
+    this.refreshEvent.emit(this.lastEvent);
   }
 
   nextSortValue() {
@@ -57,7 +57,7 @@ export class AllImagesComponent {
   }
 
   delete(id: any) {
-    this.imageService.delete(id).subscribe(() => this.paginate.emit(this.lastEvent));
+    this.imageService.delete(id).subscribe(() => this.refreshEvent.emit(this.lastEvent));
   }
 
   edit(id: number) {
@@ -65,7 +65,7 @@ export class AllImagesComponent {
   }
 
   validate(id: number) {
-    this.imageService.patch(this.toBeEdited, this.newImageName).subscribe(() => this.paginate.emit(this.lastEvent));
+    this.imageService.patch(this.toBeEdited, this.newImageName).subscribe(() => this.refreshEvent.emit(this.lastEvent));
     this.toBeEdited = null;
     this.newImageName = "";
   }
@@ -80,18 +80,14 @@ export class AllImagesComponent {
     const dialogRef = this.dialog.open(ImagePopup, { width: '750px' })
 
     dialogRef.afterClosed().subscribe(result => {
-      this.navigateTo('home');
+      this.refreshEvent.emit(this.lastEvent);
     });
-  }
-
-  navigateTo(value) {
-    this.router.navigate(['../', value]);
   }
 
   switchThumb () {
     this.type = !this.type;
     this.lastEvent.type = this.type ? 'thumb' : null;  
-    this.paginate.emit(this.lastEvent);
+    this.refreshEvent.emit(this.lastEvent);
 
   }
 
