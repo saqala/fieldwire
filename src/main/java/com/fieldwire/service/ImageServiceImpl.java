@@ -8,17 +8,7 @@ import com.fieldwire.service.domain.Image;
 import com.fieldwire.service.domain.ImagePage;
 import com.fieldwire.service.mapper.ImageMapper;
 import com.fieldwire.utile.ImageStorage;
-
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.LocalDate;
-
 import liquibase.util.StringUtil;
-import org.imgscalr.Scalr;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,7 +17,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.imageio.ImageIO;
+import java.io.IOException;
+import java.time.LocalDate;
 
 import static com.fieldwire.service.domain.Image.THUMB;
 
@@ -36,11 +27,14 @@ public class ImageServiceImpl implements ImageService {
 
     public static final String SORT_FIELD = "name";
 
-    @Autowired
     ImageRepository imageRepository;
 
-    @Autowired
     ImageStorage imageStorage;
+
+    public ImageServiceImpl(ImageRepository imageRepository, ImageStorage imageStorage) {
+        this.imageRepository = imageRepository;
+        this.imageStorage = imageStorage;
+    }
 
     @Override
     public ImagePageDto getPaginatedImages(Integer page, Integer numberOfElements, String search, String sort, String type) {
@@ -81,7 +75,7 @@ public class ImageServiceImpl implements ImageService {
 
     private Image saveImageToStorage(ImageDto imageDto, String directory) throws IOException {
         MultipartFile image = imageDto.getImageFile();
-        String imageName = StringUtil.isEmpty(imageDto.getName()) ? image.getName() : imageDto.getName();
+        String imageName = StringUtil.isEmpty(imageDto.getName()) ? image.getOriginalFilename() : imageDto.getName();
         String imagePath = imageStorage.store(directory, imageDto.getImageFile().getBytes());
         return new Image(null, imageName, imagePath, null);
     }
